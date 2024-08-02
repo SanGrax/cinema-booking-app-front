@@ -57,7 +57,7 @@ const SeatSelection = () => {
         axios.post('http://localhost:5000/api/reservations', reservationData)
             .then(response => {
                 alert('Reservation created successfully!');
-                navigate(`/tickets/${response.data.reservation._id}`);// Navegar a la página de tickets con el ID de la reserva
+                navigate(`/tickets/${response.data.reservation._id}`);
             })
             .catch(error => {
                 alert('Error creating reservation: ' + error.response.data.message);
