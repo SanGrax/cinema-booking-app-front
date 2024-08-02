@@ -4,34 +4,49 @@ import { useNavigate } from 'react-router-dom';
 
 const SeatSelection = () => {
     const navigate = useNavigate();
-    const [seats, setSeats] = useState(Array(30).fill(null)); // Suponiendo 30 asientos para simplificar
+    // Estado para almacenar los asientos disponibles (suponemos 30 asientos)
+    const [seats, setSeats] = useState(Array(30).fill(null)); 
+
+     // Estado para almacenar los asientos seleccionados por el usuario
     const [selectedSeats, setSelectedSeats] = useState([]);
+
+    // Estado para almacenar los asientos reservados (para evitar su selección)
     const [reservedSeats, setReservedSeats] = useState([]);
+
+     // Obtener el ID del usuario y la película seleccionada del LocalStorage
     const userId = localStorage.getItem('userId');
     const movieId = localStorage.getItem('selectedMovieId');
 
+
+     // useEffect para obtener los asientos reservados al cargar el componente
     useEffect(() => {
         axios.get(`http://localhost:5000/api/reservations/movie/${movieId}`)
             .then(response => {
+                // Obtener todos los asientos reservados de las reservas existentes
                 const reserved = response.data.flatMap(reservation => reservation.seats);
                 setReservedSeats(reserved);
             })
             .catch(error => {
                 console.error('There was an error fetching the reserved seats!', error);
             });
-    }, [movieId]);
+    }, [movieId]);// Dependencia en movieId para volver a ejecutar si cambia
 
+
+    // Función para manejar el clic en un asiento
     const handleSeatClick = (index) => {
-        const seat = `A${index + 1}`;
-        if (reservedSeats.includes(seat)) return;
+        const seat = `A${index + 1}`;// Generar el identificador del asiento
+        if (reservedSeats.includes(seat)) return; // No permitir seleccionar asientos reservados
 
         if (selectedSeats.includes(seat)) {
+            // Desmarcar el asiento si ya está seleccionado
             setSelectedSeats(selectedSeats.filter(s => s !== seat));
         } else {
+            // Marcar el asiento como seleccionado
             setSelectedSeats([...selectedSeats, seat]);
         }
     };
 
+    // Función para manejar la reserva de asientos
     const handleReserveSeats = () => {
         const reservationData = {
             user: userId,
@@ -42,7 +57,7 @@ const SeatSelection = () => {
         axios.post('http://localhost:5000/api/reservations', reservationData)
             .then(response => {
                 alert('Reservation created successfully!');
-                navigate(`/tickets/${response.data.reservation._id}`);
+                navigate(`/tickets/${response.data.reservation._id}`);// Navegar a la página de tickets con el ID de la reserva
             })
             .catch(error => {
                 alert('Error creating reservation: ' + error.response.data.message);

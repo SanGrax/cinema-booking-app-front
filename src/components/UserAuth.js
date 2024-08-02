@@ -4,12 +4,17 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const UserAuth = () => {
+    // Estado para almacenar los datos del formulario
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
+    // Estado para almacenar mensajes de éxito o error
     const [message, setMessage] = useState('');
+    // Hook para manejar la navegación 
     const navigate = useNavigate();
+
+     // Maneja los cambios en los campos del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -18,20 +23,30 @@ const UserAuth = () => {
         });
     };
 
+     // Maneja el envío del formulario
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault();// Previene el comportamiento por defecto del formulario
+
+        // Envía una solicitud POST con los datos del formulario
         axios.post('http://localhost:5000/api/users/login', formData)
             .then(response => {
                 setMessage('User logged in successfully');
+
+                // Guarda el ID del usuario en el almacenamiento local
                 localStorage.setItem('userId', response.data.user._id);
+
+                 // Limpia los datos del formulario
                 setFormData({
                     email: '',
                     password: ''
                 });
+
+                // Obtiene el ID de la película seleccionada del almacenamiento local
                 const selectedMovieId = localStorage.getItem('selectedMovieId');
                 if (selectedMovieId) {
+                     // Redirige al componente de selección de asientos con el ID de la película
                     navigate(`/booking/${selectedMovieId}`);
-                 } // Redirigir al componente de SeatSelection.js con el selectedMovieId
+                }
             })
             .catch(error => {
                 setMessage('Error logging in: ' + error.response.data.message);

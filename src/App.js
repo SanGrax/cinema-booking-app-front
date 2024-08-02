@@ -1,13 +1,16 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import MoviePage from './pages/MoviePage';
-import BookingPage from './pages/BookingPage';
+// import MoviePage from './pages/MoviePage';
+// import BookingPage from './pages/BookingPage';
 import UserPage from './pages/UserPage';
 import MovieDetail from './pages/MovieDetail';
 import UserAuth from './components/UserAuth';
 import SeatSelection from './components/SeatSelection';
+import Ticket from './components/Ticket';
 
+
+//Routes
 function App() {
   return (
     <Routes>
@@ -19,6 +22,7 @@ function App() {
       {/* <Route path="/movies" element={<MoviePage />} />
       <Route path="/booking" element={<BookingPage />} />*/}
       <Route path="/user/login" element={<UserAuth />} />
+      <Route path="/tickets/:id" element={<Ticket />} />
     </Routes>
   );
 }
